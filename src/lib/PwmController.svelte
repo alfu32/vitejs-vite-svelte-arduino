@@ -1,9 +1,9 @@
 <script>
-
-  export let id = D0
+  import './AnalogInput.css'
+  export let id = "D0"
   export let pinValue = 50
   const setPwmValue = (e) => {
-    pinValue = e.target.value
+    pinValue = parseInt(e.target.value)
   }
 </script>
 
@@ -18,5 +18,5 @@
     on:mousemove={e=>setPwmValue(e)}
   />
 
-  <span style="display: inline-block;min-width: 3rem;max-width:3rem;text-align:right">{pinValue}%</span>
+  <pre class="num-display">{pinValue.toFixed(0).padStart(4,' ')}%</pre>
 </div>

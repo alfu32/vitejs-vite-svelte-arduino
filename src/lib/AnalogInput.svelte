@@ -15,10 +15,11 @@
   <h4 style="display:inline-block">AnalogIn({id})</h4>
   <input
     type="range"
-    min="-100"
-    max="100"
+    min="0"
+    max="3300"
     step="10"
-    value={reading}
+    value={reading*1000}
+    readonly={true}
   />
   <pre class="num-display">{human({ value: reading, unit: 'V' })}</pre>
   <pre class="num-display">{(reading/3.3*100).toFixed(3)}%</pre>

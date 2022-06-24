@@ -1,9 +1,9 @@
 <script>
   import viteLogo from '/vite.svg'
   import svelteLogo from './assets/svelte.svg'
-  import Counter from './lib/Counter.svelte'
   import PwmController from './lib/PwmController.svelte'
   import AnalogInput from './lib/AnalogInput.svelte'
+  import DigitalInput from './lib/DigitalInput.svelte'
 </script>
 
 <main>
@@ -14,9 +14,9 @@
   <PwmController id="D3"/>
   <PwmController id="D4"/>
   <PwmController id="D5"/>
-  <PwmController id="D6"/>
-  <PwmController id="D7"/>
-  <PwmController id="D8"/>
+  <DigitalInput id="D6"/>
+  <DigitalInput id="D7"/>
+  <DigitalInput id="D8"/>
 </main>
 
 <style>
