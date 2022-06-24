@@ -7,8 +7,8 @@
     ()=>{
       
       reading=Math.random()>0.5?1:0
-      const char = (reading?'⎻':'＿')
-      let newBuffer=buffer+(buffer[buffer.length-1]==char?(char+char):reading?'/'+char:'\\'+char)
+      const chr = (reading?'⎻':'＿')
+      let newBuffer=buffer+(buffer[buffer.length-1]==chr?(chr+chr):reading?'/'+chr:'\\'+chr)
       if(newBuffer.length>16){
         newBuffer = newBuffer.substring(1)
       }
