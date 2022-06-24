@@ -2,25 +2,20 @@
   import viteLogo from '/vite.svg'
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
+  import PwmController from './lib/PwmController.svelte'
 </script>
 
 <main>
-  
+  <PwmController id="D0"/>
+  <PwmController id="D1"/>
+  <PwmController id="D2"/>
+  <PwmController id="D3"/>
+  <PwmController id="D4"/>
+  <PwmController id="D5"/>
+  <PwmController id="D6"/>
+  <PwmController id="D7"/>
+  <PwmController id="D8"/>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
 </style>
