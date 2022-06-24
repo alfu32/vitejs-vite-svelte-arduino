@@ -1,10 +1,11 @@
 <script>
+  import './AnalogInput.css'
   import {human,randomSeries} from '../physical.js'
   export let id = "D0"
   let reading = 1.67
   let intvId = setInterval(
     ()=>{
-      reading=randomSeries(randomSeries({ min: 0, max: 3.3, granularity: 0.001 }))
+      reading=randomSeries({ min: 0, max: 3.3, granularity: 0.1 })
     },1000
   )
 
@@ -19,8 +20,7 @@
     step="10"
     value={reading}
   />
-  <pre style="min-width:10em;max-width:10em;display:inline-block">{human({ value: reading, unit: 'V' })}</pre>
-  <br/>{reading.toFixed(6)}
-
-  <span style="display: inline-block;min-width: 3rem;max-width:3rem;text-align:right">{reading}%</span>
+  <pre class="num-display">{human({ value: reading, unit: 'V' })}</pre>
+  <pre class="num-display">{(reading/3.3*100).toFixed(3)}%</pre>
+  <br/>
 </div>

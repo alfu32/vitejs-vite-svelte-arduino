@@ -1,0 +1,5 @@
+.num-display {
+  min-width: 5em;
+  max-width: 5em;
+  display: inline-block;
+}

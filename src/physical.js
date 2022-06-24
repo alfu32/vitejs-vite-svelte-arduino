@@ -38,6 +38,6 @@ export function human({ value, unit = 'bytes' }) {
     exponentDiv += 1;
   }
   const prefix = prefixes[exponentDiv + 6];
-  return `${m.toFixed(1 + (m % 3))}${prefix}${unit}`; //`${value.toFixed(1)}${root.toFixed(0)}${prefix}${unit}`; //`${sign}${(absValue / normalizerValue).toFixed(2) + prefix + unit}`;
+  return `${m.toFixed(5).padStart(7, ' ').substr(0, 5)}${prefix}${unit}`; //`${value.toFixed(1)}${root.toFixed(0)}${prefix}${unit}`; //`${sign}${(absValue / normalizerValue).toFixed(2) + prefix + unit}`;
 }
 export function humanTime({ value, unit = 's' }) {}
