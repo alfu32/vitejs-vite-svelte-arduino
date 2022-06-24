@@ -3,9 +3,11 @@
   import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
   import PwmController from './lib/PwmController.svelte'
+  import AnalogInput from './lib/AnalogInput.svelte'
 </script>
 
 <main>
+  <AnalogInput id="A0"/>
   <PwmController id="D0"/>
   <PwmController id="D1"/>
   <PwmController id="D2"/>
