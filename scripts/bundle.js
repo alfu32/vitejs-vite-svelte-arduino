@@ -18,6 +18,7 @@ console.log(baseFolder)
 const files=[
     'aWOT.cpp',
     'aWOT.h',
+    'commander.h',
     'PinCommander.ino',
     'secret-wifi.h',
     'StaticFiles.h',

@@ -1,101 +1,18 @@
+#if defined(ESP8266)
 #include <ESP8266WiFi.h>
+#else
+#include <WiFi.h>
+#endif
 #include "aWOT.h"
 #include "secret-wifi.h"
-#include "StaticFiles.h"
 
-uint8_t pins[10]={
-  D0,D1,D2,D3,D4,
-  D5,D6,D7,D8,
-  LED_BUILTIN,
-};
-uint8_t values[10]={
-  10,20,30,40,50,
-  60,70,80,90,
-  5,
-};
-
-static const uint8_t minPinIdx = 0;
-static const uint8_t maxPinIdx = 8;
+// #include "ota.h"
+#include "commander.h"
 
 WiFiServer server(80);
 Application app;
 
 int retryCount = 0;
-int ultrasonicDistance=0;
-double adcVoltage=0.0;
-
-/**
- * api setPin
-*/
-void setPin(Request &req,Response &res){
-  Serial.print("[setPin]");
-  char pinIdxString[2];
-  req.query("pinIdx", pinIdxString, 2);
-  char valString[4];
-  req.query("val", valString, 4);
-  int pinIdx=String(pinIdxString).toInt();
-  int val=String(valString).toInt();
-  values[pinIdx]=val;
-  int actual = (val)*255/100;
-  analogWrite(pins[pinIdx],values[pinIdx]);
-  sendStatus(req,res);
-}
-
-/**
- * api sendStatus
-*/
-void sendStatus(Request &req,Response &res){
-  Serial.print("[sendStatus]");
-  char buffLength[16];
-  String status=getStatusJson();
-  Sprintf(buffLength,"%d",status.length());
-
-  res.set("Content-Type", "application/json; charset=utf-8");
-  // res.set("Content-Encoding", "gzip");
-  res.set("Cache-Control", "no-cache");
-  res.set("Content-Length", buffLength);
-  /// res.set("Last-Modified", "Mon, 27 Jun 2022 14:59:25 GMT");
-  res.set("Vary", "Accept-Encoding");
-  res.print(status);
-}
-
-/**
- * api getStatus
-*/
-void getPins(Request &req,Response &res){
-  Serial.print("[getPins]");
-  sendStatus(req,res);
-}
-
-String getStatusJson(){
-    char buffer[256];
-    sprintf(
-        buffer,
-        "{\n\"host\":\"%s\",\n\
-        \"ultrasonicDistance\":%d,\n\
-        \"pinA0Voltage\":%d,\n\
-        \"pins\":[\n",
-        HOST_NAME,ultrasonicDistance,adcVoltage
-    );
-    String ptr = "";
-    ptr+=buffer;
-    for (uint8_t idx = minPinIdx; idx <= maxPinIdx; idx++) {
-        int currentPinValue = values[idx];
-        uint8_t currentPin = pins[idx];
-        int actual = (currentPinValue)*255/100;
-        if(idx!=minPinIdx){
-            ptr+=",";
-        }
-        sprintf(buffer,"\n{\"name\":\"\D%d\",\
-        \"pinId\":%d,\
-        \"pwm\":%d,\
-        \"actualValue\":%d\
-        }",idx,currentPin,currentPinValue,actual);
-        ptr+=buffer;
-    }
-    ptr+="\n]\n}";
-    return ptr;
-}
 
 void setup() {
   Serial.begin(115200);
@@ -110,11 +27,16 @@ void setup() {
   
   delay(2000);
   Serial.println("\nConnecting to WiFi ... ");
+  delay(2000);
+  WiFi.mode(WIFI_STA);
+  delay(2000);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  delay(2000);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print("-");
     retryCount++;
+    delay(1000);
     if(retryCount > 50 ){
       Serial.println("\nTried 50 times, restarting ... ");
       retryCount=0;
@@ -124,17 +46,19 @@ void setup() {
   }
   Serial.print("Connected to WiFi AP with localIP:");
   Serial.println(WiFi.localIP());
+    delay(1000);
   Serial.print("initialising the web api");
-  app.get("/pin", &setPin);
-  app.get("/pins", &getPins);
-  app.use(staticFiles());
-
+    delay(1000);
+  commanderSetup(app);
+  // updateSetup(app);
+  delay(1000);
   Serial.print("starting the web server");
+  delay(1000);
   server.begin();
 }
 
 void loop() {
-  Serial.print(".");
+  Serial.print(":");
   WiFiClient client = server.available();
 
   if (client.connected()) {
@@ -142,12 +66,12 @@ void loop() {
     app.process(&client);
     Serial.print("}");
   }
+  delay(500);
 
   readUltrasonic();
   readAnalogIn();
-  Serial.print(":");
+  Serial.println(".");
 }
-
 
 /**
  * internal read sensor

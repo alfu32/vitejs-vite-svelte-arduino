@@ -1,0 +1,84 @@
+#include <ESP8266HTTPUpdateServer-impl.h>
+#include <ESP8266HTTPUpdateServer.h>
+
+#ifndef AWOT_OTA_UPDATE
+#define AWOT_OTA_UPDATE
+#endif
+#include "aWOT.h"
+#include <ArduinoOTA.h>
+#include <Update.h>
+
+
+void index(Request &req, Response &res) {
+  res.set("Content-Type", "text/html");
+
+  res.println("<html>");
+  res.println("<body>");
+  res.println("  <h1>");
+  res.println("    Compiled: " __DATE__ " " __TIME__);
+  res.println("  </h1>");
+  res.println("  <form id='form'>");
+  res.println("    <input id='file' type='file'>");
+  res.println("    <input type='submit' value='Send' />");
+  res.println("  </form>");
+  res.println("</body>");
+  res.println("<script>");
+  res.println("  const form = document.getElementById('form');");
+  res.println("  form.onsubmit = function(e) {");
+  res.println("    e.preventDefault();");
+  res.println("    const body = document.getElementById('file').files[0];");
+  res.println("    fetch('/update', { method: 'POST', body }).then((response) => {");
+  res.println("      if (!response.ok) {");
+  res.println("        return alert('File upload failed');");
+  res.println("      }");
+  res.println("      alert('File upload succeeded');");
+  res.println("    });");
+  res.println("  }");
+  res.println("</script>");
+  res.println("</html>");
+}
+
+void update(Request &req, Response &res) {
+  int contentLength = req.left();
+
+  if (strcmp(req.get("Expect"), "100-continue") == 0) {
+    res.status(100);
+  }
+
+  if (!Update.begin(contentLength)) {
+    res.status(500);
+    return Update.printError(req);
+  }
+
+  unsigned long start = millis();
+  while (!req.available() && millis() - start <= 5000) {}
+
+  if (!req.available()) {
+    return res.sendStatus(408);
+  }
+
+  if (Update.writeStream(req) != contentLength) {
+    res.status(400);
+    return Update.printError(req);
+  }
+
+  if (!Update.end(true)) {
+    res.status(500);
+    return Update.printError(req);
+  }
+  res.sendStatus(204);
+}
+
+void restart(Request &req, Response &res) {
+    delay(1000);
+    ESP.restart();
+}
+
+char expectHeader[20] {};
+
+void updateSetup(Application &app){
+  app.header("Expect", expectHeader, 20);
+  app.get("/update-ui", &index);
+  app.post("/update", &update);
+  app.post("/restart", &restart);
+}

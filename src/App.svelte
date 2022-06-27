@@ -1,19 +1,25 @@
 <script>
-  import PwmController from "./lib/PwmController.svelte";
+  import PinController from "./lib/PinController.svelte";
   import AnalogInput from "./lib/AnalogInput.svelte";
   import DigitalInput from "./lib/DigitalInput.svelte";
   import { onMount } from 'svelte';
-  async function newUiPinValue(e) {
-    const {id,name,nextValue} = (e.detail);
-    console.log(e.detail);
-    const r = await fetch(`/pin?pinIdx=${id}&val=${nextValue}`)
-    let result = {...currentState}
-    try{
-      result = await r.json()
-    }catch(err){
-      console.log(err)
-    }
-    currentState = result;
+
+  let debounceId=0
+  function newUiPinValue(e) {
+    clearTimeout(debounceId);
+    debounceId = setTimeout(async () =>{
+      const {id,name,nextValue} = (e.detail);
+      console.log(e.detail);
+      const r = await fetch(`/pin?pinIdx=${id}&val=${nextValue}`)
+      let result = {...currentState}
+      try{
+        result = await r.json()
+      }catch(err){
+        console.log(err)
+        result.pins[id].pwm=nextValue
+      }
+      currentState = {...result};
+    },400)
   }
   async function synchro() {
     const r = await fetch(`/pins`)
@@ -31,7 +37,7 @@
   let currentState = {
     host: "mini-michi",
     ultrasonicDistance: 371709,
-    pinA0Voltage: 0,
+    pinA0Voltage: 0.25,
     pins: [
       { name: "D0", pinId: 16, pwm: 10, actualValue: 25 },
       { name: "D1", pinId: 5, pwm: 20, actualValue: 51 },
@@ -47,30 +53,28 @@
 
   onMount(() => {
     
-    let intvId = setInterval(async() => {
-      const result = await synchro()
-      currentState = result;
-
-    }, 2000);
-
-    return () => clearInterval(intvId);
+      ///// let intvId = setInterval(async() => {
+      /////   const result = await synchro()
+      /////   currentState = result;
+      ///// 
+      ///// }, 2000);
+      ///// 
+      ///// return () => clearInterval(intvId);
   });
 </script>
 
 <main>
-  <AnalogInput name="A0" />
-  <PwmController id="0" name="D0" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="1" name="D1" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="2" name="D2" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="3" name="D3" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="4" name="D4" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="5" name="D5" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="6" name="D6" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="7" name="D7" on:pinValueChanged={newUiPinValue} />
-  <PwmController id="8" name="D8" on:pinValueChanged={newUiPinValue} />
-  <DigitalInput id="V0" />
-  <DigitalInput id="V1" />
-  <DigitalInput id="V2" />
+  <PinController id="9" name="A0" pinType="in" currentValue={currentState.pinA0Voltage}/>
+  <PinController id="0" name="D0" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D0').pwm}/>
+  <PinController id="1" name="D1" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D1').pwm}/>
+  <PinController id="2" name="D2" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D2').pwm}/>
+  <PinController id="3" name="D3" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D3').pwm}/>
+  <PinController id="4" name="D4" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D4').pwm}/>
+  <PinController id="5" name="D5" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D5').pwm}/>
+  <PinController id="6" name="D6" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D6').pwm}/>
+  <PinController id="7" name="D7" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D7').pwm}/>
+  <PinController id="8" name="D8" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D8').pwm}/>
+  <PinController id="8" name="D8" pinType="out" on:pinValueChanged={newUiPinValue} currentValue={currentState.pins.find(v => v.name=='D8').pwm}/>
 </main>
 
 <style>
