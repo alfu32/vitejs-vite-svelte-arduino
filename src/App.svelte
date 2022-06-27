@@ -7,8 +7,26 @@
     const {id,name,nextValue} = (e.detail);
     console.log(e.detail);
     const r = await fetch(`/pin?pinIdx=${id}&val=${nextValue}`)
-    const result = await r.json()
+    let result = {...currentState}
+    try{
+      result = await r.json()
+    }catch(err){
+      console.log(err)
+    }
     currentState = result;
+  }
+  async function synchro() {
+    const r = await fetch(`/pins`)
+    let result = {...currentState}
+    let text=""
+    try{
+      text = await r.text()
+      result = JSON.parse(text)
+    }catch(err){
+      console.log(err.message);
+      console.log(text);
+    }
+    return result;
   }
   let currentState = {
     host: "mini-michi",
@@ -30,23 +48,8 @@
   onMount(() => {
     
     let intvId = setInterval(async() => {
-      // eading = randomSeries({ min: 0, max: 3.3, granularity: 0.1 });
-    const r = await fetch("/pin?pinIdx=4&val=5z")
-    const result = await r.json()
-    currentState = result;
-    //// const r = await fetch("http://192.168.1.42/pin?pinIdx=4&val=5z", {
-    ////   "headers": {
-    ////     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-    ////     "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,de;q=0.7,ru;q=0.6,fr;q=0.5",
-    ////     "cache-control": "max-age=0",
-    ////     "upgrade-insecure-requests": "1"
-    ////   },
-    ////   "referrerPolicy": "strict-origin-when-cross-origin",
-    ////   "body": null,
-    ////   "method": "GET",
-    ////   "mode": "cors",
-    ////   "credentials": "omit"
-    //// });
+      const result = await synchro()
+      currentState = result;
 
     }, 2000);
 

@@ -15,8 +15,10 @@ uint8_t values[10]={
 };
 static const uint8_t minPinIdx = 0;
 static const uint8_t maxPinIdx = 8;
+String host="esp8266-generic";
 int ultrasonicDistance=0;
 double adcVoltage=0.0;
+
 
 
 void setPin(Request &req,Response &res){
@@ -24,8 +26,8 @@ void setPin(Request &req,Response &res){
   req.query("pinIdx", pinIdxString, 2);
   char valString[4];
   req.query("val", valString, 4);
-  int pinIdx=pinIdxString.toInt();
-  int val=valString.toInt();
+  int pinIdx=String(pinIdxString).toInt();
+  int val=String(valString).toInt();
   values[pinIdx]=val;
   int actual = (val)*255/100;
   analogWrite(pins[pinIdx],values[pinIdx]);
@@ -65,6 +67,7 @@ String getStatusJson(){
     ptr+="\n]\n}";
     return ptr;
 }
+
 
 WiFiServer server(80);
 Application app;

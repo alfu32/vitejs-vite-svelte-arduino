@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "template-d1mini",
+			"path": "../platformio/template-d1mini"
+		}
+	],
+	"settings": {}
+}

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dist": "awot-static",
+    "bundle": "node scripts/bundle.js"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
@@ -14,5 +16,18 @@
     "svelte": "^3.48.0",
     "vite": "^2.9.12"
   },
-  "proxy": "http://192.68.1.42"
+  "proxy": "http://192.68.1.42",
+  "awot-static": {
+    "sources": "./dist",
+    "indexFile": "index.html",
+    "sketchDir": "./PinCommander",
+    "exclude": [
+      "*.map",
+      "service-worker.js"
+    ]
+  },
+  "dependencies": {
+    "fetch-blob": "^3.1.5",
+    "jszip": "^3.10.0"
+  }
 }
