@@ -1,5 +1,5 @@
 {
-  "name": "vite-svelte-starter",
+  "name": "esp-pin-commander",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,9 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.49",
+    "awot-scripts": "^3.1.2",
     "svelte": "^3.48.0",
     "vite": "^2.9.12"
-  }
+  },
+  "proxy": "http://192.68.1.42"
 }
