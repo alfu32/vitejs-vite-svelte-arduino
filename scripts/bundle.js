@@ -1,13 +1,17 @@
 import * as fs from 'fs';
 import JSZip from 'jszip';
+import dateFormat from 'dateformat';
 
 
 const zip = new JSZip();
 
-fs.rmdirSync('bundle',{ recursive: true, force: true });
-fs.mkdirSync('bundle');
 
+/// fs.rmdirSync('bundle',{ recursive: true, force: true });
+if(!fs.existsSync('bundle')){
+    fs.mkdirSync('bundle');
+}
 
+const dateStamp=dateFormat(new Date(), "yyyymmdd-hhMMss");
 
 const baseFolder=`PinCommander`
 console.log(baseFolder)
@@ -32,5 +36,5 @@ files.forEach(
 )
 zip.generateAsync({type:"nodebuffer"}).then(function(content) {
     // see FileSaver.js
-    fs.writeFileSync(`bundle/${baseFolder}.zip`,content);
+    fs.writeFileSync(`bundle/${dateStamp}-${baseFolder}.zip`,content);
 });
