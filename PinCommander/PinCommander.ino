@@ -22,7 +22,7 @@ void setup() {
   for (uint8_t idx = minPinIdx; idx <= maxPinIdx; idx++) {
     Serial.printf("enabling Pin \D%d[%d] for output with initial value = %d\n",idx,pins[idx],values[idx]);
     delay(100);
-    pinMode(pins[idx], modes[idx]);
+    pinMode(pins[idx], OUTPUT);
   }
   
   delay(2000);
