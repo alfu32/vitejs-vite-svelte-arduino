@@ -1,4 +1,7 @@
-#include "StaticFiles.h"
+
+#pragma once
+#include "AwotPages.h"
+#include "Arduino.h"
 #define PWM_MULTIPLIER 1024/100
 
 #if defined(ESP8266)
@@ -27,6 +30,9 @@ uint8_t values[10]={
 static const uint8_t minPinIdx = 0;
 static const uint8_t maxPinIdx = 8;
 #endif
+
+using namespace AwotPages;
+
 int ultrasonicDistance=0;
 double adcVoltage=0.0;
 
@@ -50,7 +56,7 @@ String getStatusJson(){
         if(idx!=minPinIdx){
             ptr+=",";
         }
-        sprintf(buffer,"\n{\"name\":\"\D%d\",\
+        sprintf(buffer,"\n{\"name\":\"D%d\",\
         \"pinId\":%d,\
         \"pwm\":%d,\
         \"actualValue\":%d\
@@ -108,5 +114,5 @@ void getPins(Request &req,Response &res){
 void commanderSetup(Application &app){
   app.get("/pin", &setPin);
   app.get("/pins", &getPins);
-  app.use(staticFiles());
+  app.use(AwotPages::staticFilesConfig());
 }
